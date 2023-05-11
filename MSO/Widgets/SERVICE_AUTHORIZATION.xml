@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <widgets>
+make some offline changes....
+
+type 
+type
+type
+click
+
   <RadPlusWidgetWizard widgetID="SERVICE_AUTHORIZATION">
     <application>MSO</application>
     <contentType>text/html</contentType>
