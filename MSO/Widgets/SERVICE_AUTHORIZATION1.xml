@@ -16,24 +16,35 @@
     <title>Service Authorizations</title>
     <userdefined>true</userdefined>
     <widgetType>Billing</widgetType>
-    <sqlcode1><![CDATA[SELECT TOP 250 
-'MSO116' as OPTIONNAME<HIDE:OPTIONNAME>
-,SYSTEM.history_member_auths.PATID As "PATID"<LINK:OPTIONNAME:PATID:ID:::PATID>
-,SYSTEM.history_member_auths.comments_on_auth As "MCI #"
-,SYSTEM.history_member_auths.type_of_auth_value As "Type"
-,SYSTEM.history_member_auths.code_authorized_1 As "Procedure Code"
-,SYSTEM.history_member_auths.begin_date_of_auth As "Begin Date"
-,SYSTEM.history_member_auths.end_date_of_auth As "End Date"
-,SYSTEM.history_member_auths.auth_level_care_value As "Auth Level of Care"
-,SYSTEM.history_member_auths.rem_liab_total As "Total Amount"
-,SYSTEM.history_member_auths.authorization_number As "Auth Number"
-,SYSTEM.history_member_auths.data_entry_by As "Entered By"
-,SYSTEM.history_member_auths.data_entry_date As "Entry Date"
-FROM SYSTEM.history_member_auths 
-WHERE 
-(SYSTEM.history_member_auths.FACILITY=?FACILITY) AND (SYSTEM.history_member_auths.PATID=?PATID) 
-ORDER BY SYSTEM.history_member_auths.data_entry_date DESC]]></sqlcode1>
+    <sqlcode1><![CDATA[SELECT 
+'MSO116' as OPTIONNAME <HIDE:OPTIONNAME>,
+sad.AUTuniqueid as "ID" <HIDE:ID>,
+sad.PATID As "PATID" <LINK:OPTIONNAME:PATID:ID:::PATID>,
+sad.FACILITY <HIDE:FACILITY>
+,
+sad.provider_name as "Contracting Provider",
+sad.perf_provider_name as "Performing Provider",
+sas.procedure_code as "Procedure Code",
+sad.begin_date_of_auth as "Begin Date",
+sad.end_date_of_auth as "End Date",
+sad.auth_level_care_value as "Auth Level of Care",
+sad.rem_liab_total As "Total Amount",
+sad.authorization_number As "Auth Number",
+sad.data_entry_by As "Entered By",
+sad.data_entry_date As "Entry Date"
+
+FROM SYSTEM.service_auth_detail sad
+INNER JOIN SYSTEM.service_auth_svc sas
+ON sad.FACILITY = sas.FACILITY 
+AND sad.PATID  = sas.PATID 
+AND sad.AUTuniqueid = sas.AUTUniqueID 
+AND sas."row_number" = 1
+WHERE
+sad.FACILITY = ?FACILITY
+AND sad.PATID = ?PATID
+ORDER BY
+sad.data_entry_date DESC]]></sqlcode1>
     <enhancedview>true</enhancedview>
   </RadPlusWidgetSQLMulti>
-  <rootCode>LIVE</rootCode>
+  <rootCode>BLD</rootCode>
 </widgets>
