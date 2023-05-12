@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widgets>
+  <RadPlusWidgetSQLMulti widgetID="SERVICE_AUTHORIZATION1">
+    <application>MSO</application>
+    <contentType>text/html</contentType>
+    <entityType>PATIENT</entityType>
+    <manualRefresh>true</manualRefresh>
+    <minimizable>true</minimizable>
+    <ntstRestrictExport>false</ntstRestrictExport>
+    <undockable>true</undockable>
+    <skipInitialLoad>false</skipInitialLoad>
+    <suppressHeader>false</suppressHeader>
+    <suppressLineBreaks>false</suppressLineBreaks>
+    <timeLimit>3</timeLimit>
+    <textTemplate>N</textTemplate>
+    <title>Service Authorizations</title>
+    <userdefined>true</userdefined>
+    <widgetType>Billing</widgetType>
+    <sqlcode1><![CDATA[SELECT TOP 250 
+'MSO116' as OPTIONNAME<HIDE:OPTIONNAME>
+,SYSTEM.history_member_auths.PATID As "PATID"<LINK:OPTIONNAME:PATID:ID:::PATID>
+,SYSTEM.history_member_auths.comments_on_auth As "MCI #"
+,SYSTEM.history_member_auths.type_of_auth_value As "Type"
+,SYSTEM.history_member_auths.code_authorized_1 As "Procedure Code"
+,SYSTEM.history_member_auths.begin_date_of_auth As "Begin Date"
+,SYSTEM.history_member_auths.end_date_of_auth As "End Date"
+,SYSTEM.history_member_auths.auth_level_care_value As "Auth Level of Care"
+,SYSTEM.history_member_auths.rem_liab_total As "Total Amount"
+,SYSTEM.history_member_auths.authorization_number As "Auth Number"
+,SYSTEM.history_member_auths.data_entry_by As "Entered By"
+,SYSTEM.history_member_auths.data_entry_date As "Entry Date"
+FROM SYSTEM.history_member_auths 
+WHERE 
+(SYSTEM.history_member_auths.FACILITY=?FACILITY) AND (SYSTEM.history_member_auths.PATID=?PATID) 
+ORDER BY SYSTEM.history_member_auths.data_entry_date DESC]]></sqlcode1>
+    <enhancedview>true</enhancedview>
+  </RadPlusWidgetSQLMulti>
+  <rootCode>LIVE</rootCode>
+</widgets>
