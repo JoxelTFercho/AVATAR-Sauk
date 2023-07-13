@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widgets>
+  <RadPlusWidgetSQLMulti widgetID="CCS_FINANCIAL_ELIGIBILITY">
+    <application>BHIS</application>
+    <contentType>text/html</contentType>
+    <entityType>PATIENT</entityType>
+    <manualRefresh>true</manualRefresh>
+    <minimizable>true</minimizable>
+    <ntstRestrictExport>false</ntstRestrictExport>
+    <undockable>true</undockable>
+    <skipInitialLoad>false</skipInitialLoad>
+    <timeLimit>10</timeLimit>
+    <title>CCS Financial Eligibility Widget </title>
+    <userdefined>true</userdefined>
+    <widgetType>Billing</widgetType>
+    <sqlcode1><![CDATA[SELECT 
+'PATIENT500' as OPTIONNAME <HIDE:OPTIONNAME>,
+bgd.S_INDEX as "ID" <HIDE:ID>,
+bgd.PATID as "PATID" <HIDE:PATID>,
+bgd.FACILITY as "FACILITY" <HIDE:FACILITY>,
+bgd.EPISODE_NUMBER as "EPN" <HIDE:EPN>,
+bged.cov_effective_date as "ALIAS" <HIDE:ALIAS>,
+
+bged.cov_effective_date as "Effective Date" <LINK:OPTIONNAME:PATID:ID:EPN::ALIAS>, 
+string(bgt.guarantor_name, ' / ', bgt.GUARANTOR_ID) as "Guarantor Name / Number", 
+bgsd.subs_policy as "Subscriber #"
+
+FROM billing_guar_data bgd
+JOIN billing_guar_emp_data bged 
+ON bgd.FACILITY = bged.FACILITY 
+AND bgd.PATID = bged.PATID 
+AND bgd.S_INDEX = bged.S_INDEX
+AND bgd.GUARANTOR_ID = bged.GUARANTOR_ID
+JOIN SYSTEM.billing_guar_table bgt
+ON bgd.FACILITY = bgt.FACILITY 
+AND bgd.GUARANTOR_ID = bgt.GUARANTOR_ID 
+JOIN SYSTEM.billing_guar_subs_data bgsd
+ON bgd.FACILITY = bgsd.FACILITY 
+AND bgd.PATID = bgsd.PATID 
+AND bgd.S_INDEX = bgsd.S_INDEX
+AND bgd.GUARANTOR_ID = bgsd.GUARANTOR_ID
+JOIN SYSTEM.episode_history eh
+ON bgd.FACILITY = eh.FACILITY 
+AND bgd.PATID = eh.PATID 
+AND bgd.EPISODE_NUMBER = eh.EPISODE_NUMBER 
+
+WHERE 
+
+bgd.FACILITY = ?FACILITY
+AND bgd.PATID = ?PATID
+AND (?EPID = '' OR bgd.EPISODE_NUMBER = ?EPID)
+AND eh.program_code IN ('4000','4050')
+
+ORDER BY bgsd.guarantor_order, bged.cov_effective_date]]></sqlcode1>
+  </RadPlusWidgetSQLMulti>
+  <rootCode>BLD</rootCode>
+</widgets>
