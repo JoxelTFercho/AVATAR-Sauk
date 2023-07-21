@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widgets>
+  <RadPlusWidgetSQLMulti widgetID="CASE_MANAGMENT_REVIEW">
+    <application>BHIS</application>
+    <contentType>text/html</contentType>
+    <entityType>PATIENT</entityType>
+    <manualRefresh>true</manualRefresh>
+    <minimizable>true</minimizable>
+    <ntstRestrictExport>false</ntstRestrictExport>
+    <undockable>false</undockable>
+    <skipInitialLoad>false</skipInitialLoad>
+    <timeLimit>10</timeLimit>
+    <title>Case Management Review</title>
+    <userdefined>true</userdefined>
+    <widgetType>Client</widgetType>
+    <sqlcode1><![CDATA[SELECT * FROM (
+
+SELECT cpn.EPISODE_NUMBER as "Episode Number", CONVERT(varchar(10), cpn.date_of_note, 101) as "Date", cpns3.ss_notec_sing_dict_11_value as "Status", string($LISTGET($LISTFROMSTRING(cpn.practitioner_name, ','), 2), ' ', $LISTGET($LISTFROMSTRING(cpn.practitioner_name, ','), 1)) as "Staff Name"
+FROM CWSSYSTEM.cw_patient_notes cpn
+JOIN CWSSYSTEM.cw_patient_notes_supp_3 cpns3
+ON cpn.FACILITY = cpns3.FACILITY 
+AND cpn.PATID = cpns3.PATID 
+AND cpn.EPISODE_NUMBER = cpns3.EPISODE_NUMBER 
+JOIN 
+(
+SELECT cpn.FACILITY, cpn.PATID, cpn.EPISODE_NUMBER, MAX(cpn.NOT_uniqueid) as NOT_uniqueid, cpnl.date_entry_timestamp
+FROM CWSSYSTEM.cw_patient_notes cpn
+JOIN CWSSYSTEM.cw_patient_notes_supp_3 cpns3
+ON cpn.FACILITY = cpns3.FACILITY 
+AND cpn.PATID = cpns3.PATID 
+AND cpn.EPISODE_NUMBER = cpns3.EPISODE_NUMBER 
+JOIN (
+SELECT cpn.FACILITY, cpn.PATID, cpn.EPISODE_NUMBER, 
+MAX(CAST((string(CONVERT(varchar(10),cpn.data_entry_date, 120), ' ',  cpn.data_entry_time)) as TIMESTAMP)) as date_entry_timestamp
+FROM CWSSYSTEM.cw_patient_notes cpn
+JOIN CWSSYSTEM.cw_patient_notes_supp_3 cpns3
+ON cpn.FACILITY = cpns3.FACILITY 
+AND cpn.PATID = cpns3.PATID 
+AND cpn.EPISODE_NUMBER = cpns3.EPISODE_NUMBER 
+WHERE cpn.FACILITY = ?FACILITY
+AND cpn.PATID = ?PATID
+AND cpns3.ss_notec_sing_dict_11_code IN ('1','2')
+AND draft_final_code = 'F' and document_routing_status = 'Final'
+GROUP BY cpn.FACILITY, cpn.PATID, cpn.EPISODE_NUMBER
+) cpnl
+ON cpn.FACILITY = cpnl.FACILITY 
+AND cpn.PATID = cpnl.PATID 
+AND cpn.EPISODE_NUMBER = cpnl.EPISODE_NUMBER 
+AND CAST((string(CONVERT(varchar(10),cpn.data_entry_date, 120), ' ',  cpn.data_entry_time)) as TIMESTAMP) = cpnl.date_entry_timestamp
+WHERE cpns3.ss_notec_sing_dict_11_code IN ('1','2')
+GROUP BY cpn.FACILITY, cpn.PATID, cpn.EPISODE_NUMBER
+) cpnl
+ON cpn.FACILITY = cpnl.FACILITY 
+AND cpn.PATID = cpnl.PATID 
+AND cpn.EPISODE_NUMBER = cpnl.EPISODE_NUMBER 
+AND cpn.NOT_uniqueid  = cpnl.NOT_uniqueid
+AND CAST((string(CONVERT(varchar(10),cpn.data_entry_date, 120), ' ',  cpn.data_entry_time)) as TIMESTAMP) = cpnl.date_entry_timestamp
+WHERE cpns3.ss_notec_sing_dict_11_code IN ('1','2')
+UNION
+SELECT cpn.EPISODE_NUMBER as "Episode Number", CONVERT(varchar(10), cpn.date_of_note, 101) as "Date", cpns3.ss_notec_sing_dict_11_value as "Status", string($LISTGET($LISTFROMSTRING(cpn.practitioner_name, ','), 2), ' ', $LISTGET($LISTFROMSTRING(cpn.practitioner_name, ','), 1)) as "Staff Name"
+FROM CWSSYSTEM.cw_patient_notes cpn
+JOIN CWSSYSTEM.cw_patient_notes_supp_3 cpns3
+ON cpn.FACILITY = cpns3.FACILITY 
+AND cpn.PATID = cpns3.PATID 
+AND cpn.EPISODE_NUMBER = cpns3.EPISODE_NUMBER 
+JOIN 
+(
+SELECT cpn.FACILITY, cpn.PATID, cpn.EPISODE_NUMBER, MAX(cpn.NOT_uniqueid) as NOT_uniqueid, cpnl.date_entry_timestamp
+FROM CWSSYSTEM.cw_patient_notes cpn
+JOIN CWSSYSTEM.cw_patient_notes_supp_3 cpns3
+ON cpn.FACILITY = cpns3.FACILITY 
+AND cpn.PATID = cpns3.PATID 
+AND cpn.EPISODE_NUMBER = cpns3.EPISODE_NUMBER 
+JOIN (
+SELECT cpn.FACILITY, cpn.PATID, cpn.EPISODE_NUMBER, 
+MAX(CAST((string(CONVERT(varchar(10),cpn.data_entry_date, 120), ' ',  cpn.data_entry_time)) as TIMESTAMP)) as date_entry_timestamp
+FROM CWSSYSTEM.cw_patient_notes cpn
+JOIN CWSSYSTEM.cw_patient_notes_supp_3 cpns3
+ON cpn.FACILITY = cpns3.FACILITY 
+AND cpn.PATID = cpns3.PATID 
+AND cpn.EPISODE_NUMBER = cpns3.EPISODE_NUMBER 
+WHERE cpn.FACILITY = ?FACILITY
+AND cpn.PATID = ?PATID
+AND cpns3.ss_notec_sing_dict_11_code IN ('3','4')
+AND draft_final_code = 'F' and document_routing_status = 'Final'
+GROUP BY cpn.FACILITY, cpn.PATID, cpn.EPISODE_NUMBER
+) cpnl
+ON cpn.FACILITY = cpnl.FACILITY 
+AND cpn.PATID = cpnl.PATID 
+AND cpn.EPISODE_NUMBER = cpnl.EPISODE_NUMBER 
+AND CAST((string(CONVERT(varchar(10),cpn.data_entry_date, 120), ' ',  cpn.data_entry_time)) as TIMESTAMP) = cpnl.date_entry_timestamp
+WHERE cpns3.ss_notec_sing_dict_11_code IN ('3','4')
+GROUP BY cpn.FACILITY, cpn.PATID, cpn.EPISODE_NUMBER
+) cpnl
+ON cpn.FACILITY = cpnl.FACILITY 
+AND cpn.PATID = cpnl.PATID 
+AND cpn.EPISODE_NUMBER = cpnl.EPISODE_NUMBER 
+AND cpn.NOT_uniqueid  = cpnl.NOT_uniqueid
+AND CAST((string(CONVERT(varchar(10),cpn.data_entry_date, 120), ' ',  cpn.data_entry_time)) as TIMESTAMP) = cpnl.date_entry_timestamp
+WHERE cpns3.ss_notec_sing_dict_11_code IN ('1','2','3','4')
+)
+ORDER BY 
+"Episode Number", "Date"]]></sqlcode1>
+    <enhancedview>false</enhancedview>
+  </RadPlusWidgetSQLMulti>
+  <rootCode>BLD</rootCode>
+</widgets>
