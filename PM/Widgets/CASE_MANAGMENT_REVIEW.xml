@@ -9,10 +9,7 @@
     <ntstRestrictExport>false</ntstRestrictExport>
     <undockable>false</undockable>
     <skipInitialLoad>false</skipInitialLoad>
-    <suppressHeader>false</suppressHeader>
-    <suppressLineBreaks>false</suppressLineBreaks>
     <timeLimit>10</timeLimit>
-    <textTemplate>N</textTemplate>
     <title>Case Management Review</title>
     <userdefined>true</userdefined>
     <widgetType>Client</widgetType>
@@ -52,5 +49,5 @@ WHERE cpns3.ss_notec_sing_dict_11_code IN ('3','4')
 ORDER BY "Episode Number", "Date" desc]]></sqlcode1>
     <enhancedview>false</enhancedview>
   </RadPlusWidgetSQLMulti>
-  <rootCode>UAT</rootCode>
+  <rootCode>BLD</rootCode>
 </widgets>
